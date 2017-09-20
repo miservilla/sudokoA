@@ -12,7 +12,9 @@
 void cleanPuzz(char puzzLine[], char puzz[9][9]);
 void displayPuzz(char puzz[9][9]);
 void buildpuzz(char puzzLine[]);
-void inputErrorTest(int charCount);
+void inputErrorTest();
+void dupTestRow(char puzz[9][9]);
+void dupTestCol(char puzz[9][9]);
 
 char puzzLine[81];
 char puzz[9][9];
@@ -40,9 +42,11 @@ int main()
     charCount++;
     if (puzzChar == '\n')
     {
-      inputErrorTest(charCount);
       buildpuzz(puzzLine);
-      displayPuzz(puzz);
+      dupTestRow(puzz);
+      dupTestCol(puzz);
+      inputErrorTest();
+      displayPuzz(puzz); /*This needs to come out in prod.*/
       cleanPuzz(puzzLine, puzz);
       charCount = 0;
     }
@@ -64,7 +68,7 @@ void cleanPuzz(char puzzLine[], char puzz[9][9])
     }
   }
 }
-void displayPuzz(char puzz[9][9])
+void displayPuzz(char puzz[9][9]) /*This needs to come out in prod.*/
 {
   printf("\n");
   for (row = 0; row < 9; row++)
@@ -77,7 +81,7 @@ void displayPuzz(char puzz[9][9])
   }
   printf("\n");
 }
-void inputErrorTest(int charCount)
+void inputErrorTest()
 {
   if (charCount != 82 || errorFlag == 1)
   {
@@ -93,6 +97,54 @@ void buildpuzz(char puzzLine[])
     for (col = 0; col < 9; col++)
     {
       puzz[row][col] = puzzLine[i++];
+    }
+  }
+}
+void dupTestRow(char puzz[9][9])
+{
+  int i;
+  int cmpInt;
+  int loc;
+  for (loc = 0; loc < 9; ++loc) /*1st loop to advance down rows.*/
+  {
+    for (i = 0; i < 8; ++i) /*2nd loop to test across row.*/
+    {
+      if (puzz[loc][i] == '.')
+      {
+        break;
+      }
+      for (cmpInt = i + 1; cmpInt < 9; ++cmpInt) /*3rd loop to compare chars.*/
+      {
+        if (puzz[loc][i] == puzz[loc][cmpInt])
+        {
+          errorFlag = 1;
+          return;
+        }
+      }
+    }
+  }
+}
+void dupTestCol(char puzz[9][9])
+{
+  int i;
+  int cmpInt;
+  int loc;
+  for (loc = 0; loc < 9; ++loc) /*1st loop to advance down cols.*/
+  {
+    for (i = 0; i < 8; ++i) /*2nd loop to test across col.*/
+    {
+      if (puzz[i][loc] == '.')
+      {
+        break;
+      }
+      for (cmpInt = i + 1; cmpInt < 9; ++cmpInt) /*3rd loop to compare chars.*/
+      {
+        if (puzz[i][loc] == puzz[cmpInt][loc])
+        {
+          errorFlag = 1;
+          return;
+        }
+      }
     }
   }
 }
