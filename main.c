@@ -9,12 +9,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
-void cleanPuzz(char puzz[9][9]);
+void cleanPuzz(char puzzLine[], char puzz[9][9]);
 void displayPuzz(char puzz[9][9]);
-void printLine(char puzzLine[]);
-void buildpuzzLine(int charCount, char puzzChar);
 void buildpuzz(char puzzLine[]);
-void inputErrorTest(char puzzLine[], int charCount);
+void inputErrorTest(int charCount);
 
 char puzzLine[81];
 char puzz[9][9];
@@ -31,35 +29,33 @@ int main()
   while((puzzChar = getchar()) != EOF)
   {
     putchar(puzzChar);
-    if (charCount < 81 && (isdigit(puzzChar) || puzzChar == '.'))
+    if (charCount < 81)
     {
-      puzzLine[charCount] = puzzChar;
-      charCount++;
+      puzzLine[charCount] = (char) puzzChar;
+      if (!(isdigit(puzzChar) || puzzChar == '.'))
+      {
+        errorFlag = 1;
+      }
     }
-    else if (puzzChar == '\n')
+    charCount++;
+    if (puzzChar == '\n')
     {
-      inputErrorTest(puzzLine, charCount);
+      inputErrorTest(charCount);
       buildpuzz(puzzLine);
       displayPuzz(puzz);
+      cleanPuzz(puzzLine, puzz);
       charCount = 0;
-    }
-    else
-    {
-      errorFlag = 1;
     }
   }
   return 0;
 }
-void printLine(char puzzLine[])
+void cleanPuzz(char puzzLine[], char puzz[9][9])
 {
   int i;
   for (i = 0; i < 81; ++i)
   {
-    printf("%c\n", puzzLine[i]);
+    puzzLine[i] = ' ';
   }
-}
-void cleanPuzz(char puzz[9][9])
-{
   for (row = 0; row < 9; ++row)
   {
     for (col = 0; col < 9; ++col)
@@ -81,12 +77,9 @@ void displayPuzz(char puzz[9][9])
   }
   printf("\n");
 }
-void buildpuzzLine(int charCount, char puzzChar)
+void inputErrorTest(int charCount)
 {
-}
-void inputErrorTest(char puzzLine[], int charCount)
-{
-  if (charCount != 81 || errorFlag == 1)
+  if (charCount != 82 || errorFlag == 1)
   {
     printf("Error\n");
     errorFlag = 0;
