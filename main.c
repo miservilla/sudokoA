@@ -16,6 +16,7 @@ void inputErrorTest();
 void dupTestRow(char puzz[9][9]);
 void dupTestCol(char puzz[9][9]);
 void dupTestUnit(char puzz[9][9], int row, int col, int num);
+void threeSquareErrorSearch(char puzz[9][9]);
 
 char puzzLine[81];
 char puzz[9][9];
@@ -49,6 +50,7 @@ int main()
       buildpuzz(puzzLine);
       dupTestRow(puzz);
       dupTestCol(puzz);
+      threeSquareErrorSearch(puzz);
       inputErrorTest();
       displayPuzz(puzz); /*This needs to come out in prod.*/
       cleanPuzz(puzzLine, puzz);
@@ -156,10 +158,22 @@ void dupTestUnit(char puzz[9][9], int row, int col, int num)
   {
     for (j = colStart; j < colStart + 3; ++j)
     {
-      if(puzz[i][j] == num)
+      if(puzz[i][j] == num && row != i && col != j)
+      {
         errorFlag = 1;
-      return;
+        return;
+      }
     }
   }
-
+}
+void threeSquareErrorSearch(char puzz[9][9])
+{
+  for (row = 0; row < 9; ++row)
+  {
+    for (col = 0; col < 9; ++col)
+    {
+      if(puzz[row][col] != '.')
+      dupTestUnit(puzz, row, col, puzz[row][col]);
+    }
+  }
 }
